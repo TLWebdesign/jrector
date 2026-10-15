@@ -5,6 +5,7 @@ Rules that bring code up to Joomla 7.
 Back to the [rule index](../rules.md).
 
 - [GetInstanceToContainerRector](#getinstancetocontainerrector)
+- [ResultIsFalseablePropertyRector](#resultisfalseablepropertyrector)
 
 ---
 
@@ -76,5 +77,63 @@ use Rector\Config\RectorConfig;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(GetInstanceToContainerRector::class);
+};
+```
+
+---
+
+## ResultIsFalseablePropertyRector
+
+**Class:** `Joomla\Rector\Joomla7\ResultIsFalseablePropertyRector`
+
+Removes the `$resultIsFalseable` property from event classes that use one of the `ResultType*Aware` traits (Array, Float, Integer, Numeric, Object, String).
+
+Joomla 7 removes the flag, `@deprecated 4.3 will be removed in 7.0`, from the traits together with the branch in `typeCheckResult()` that honoured it, see the [Joomla 7 update notes](https://manual.joomla.org/updates/64-70/removed-backward-incompatibility/). An override in an event class is dead code from then on: a `false` result throws the type's `InvalidArgumentException` whatever the property says.
+
+### Before / After
+
+```php
+// Before
+class GetItemsEvent extends AbstractEvent implements ResultAwareInterface
+{
+    use ResultAware;
+    use ResultTypeArrayAware;
+
+    protected $resultIsFalseable = true;
+}
+```
+
+```php
+// After
+class GetItemsEvent extends AbstractEvent implements ResultAwareInterface
+{
+    use ResultAware;
+    use ResultTypeArrayAware;
+}
+```
+
+The trait use may be declared on the class itself or inherited from a parent class.
+
+### What is NOT changed
+
+- Classes that use none of the six traits, including classes with the Boolean or Mixed trait, which never had the flag. A property of that name there is the class's own.
+- Other properties in the same grouped declaration; only the single item is dropped.
+- Reads of `$this->resultIsFalseable` in an overridden `typeCheckResult()`.
+
+### Manual follow-up
+
+- An event whose listeners returned `false` to mean "no result" needs `$resultIsNullable = true` and listeners that return `null`, or an exception for a failure. The rule cannot decide that for you.
+
+### Configuration
+
+The rule needs no configuration. `autoloadPaths()` is needed when the trait use is inherited from a parent class, because that is resolved through PHPStan reflection.
+
+```php
+// rector.php
+use Joomla\Rector\Joomla7\ResultIsFalseablePropertyRector;
+use Rector\Config\RectorConfig;
+
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->rule(ResultIsFalseablePropertyRector::class);
 };
 ```

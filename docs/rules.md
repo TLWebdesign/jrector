@@ -74,6 +74,7 @@ Both mechanisms are shared with the MVC rules:
 ## [Joomla 7](rules/joomla7.md)
 
 - [GetInstanceToContainerRector](rules/joomla7.md#getinstancetocontainerrector) — Replaces the static `getInstance()` accessors removed in Joomla 7 (`Pathway`, `Session`, `Cache`, `CacheController`) with the application or the container.
+- [ResultIsFalseablePropertyRector](rules/joomla7.md#resultisfalseablepropertyrector) — Removes the `$resultIsFalseable` property, dropped from the `ResultType*Aware` traits in Joomla 7, from event classes.
 
 ## Rule sets
 

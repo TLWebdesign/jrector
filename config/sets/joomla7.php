@@ -11,6 +11,7 @@
 declare(strict_types=1);
 
 use Joomla\Rector\Joomla7\GetInstanceToContainerRector;
+use Joomla\Rector\Joomla7\ResultIsFalseablePropertyRector;
 use Rector\Config\RectorConfig;
 
 /**
@@ -19,4 +20,6 @@ use Rector\Config\RectorConfig;
 return static function (RectorConfig $rectorConfig): void {
     // Replaces the removed static getInstance() accessors with the application or the container.
     $rectorConfig->rule(GetInstanceToContainerRector::class);
+    // Removes the $resultIsFalseable property that the ResultType*Aware traits no longer have.
+    $rectorConfig->rule(ResultIsFalseablePropertyRector::class);
 };

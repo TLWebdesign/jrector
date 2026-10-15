@@ -26,6 +26,7 @@ use Joomla\Rector\Joomla6\Plugin\PluginServiceProviderRector;
 use Joomla\Rector\Joomla6\Template\CountModulesRector;
 use Joomla\Rector\Joomla6\Template\DocumentAssetsToWebAssetManagerRector;
 use Joomla\Rector\Joomla7\GetInstanceToContainerRector;
+use Joomla\Rector\Joomla7\ResultIsFalseablePropertyRector;
 use Rector\Config\RectorConfig;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
@@ -192,10 +193,12 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/vendor/joomla-projects/jrector/config/sets/joomla7.php',
     ]);
 
-    // The set above contains GetInstanceToContainerRector: it replaces the static getInstance()
-    // accessors removed in Joomla 7 (Pathway, Session, Cache, CacheController) with the
-    // application or the container. To run only that rule:
+    // The set above contains these rules. To run one of them alone:
+    // // Replaces the static getInstance() accessors removed in Joomla 7 (Pathway, Session,
+    // // Cache, CacheController) with the application or the container.
     // $rectorConfig->rule(GetInstanceToContainerRector::class);
+    // // Removes the $resultIsFalseable property that the ResultType*Aware traits no longer have.
+    // $rectorConfig->rule(ResultIsFalseablePropertyRector::class);
 
 
     /**
