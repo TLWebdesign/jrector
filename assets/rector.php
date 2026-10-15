@@ -25,6 +25,7 @@ use Joomla\Rector\Joomla6\Plugin\EventArgumentsToTypedEventRector;
 use Joomla\Rector\Joomla6\Plugin\PluginServiceProviderRector;
 use Joomla\Rector\Joomla6\Template\CountModulesRector;
 use Joomla\Rector\Joomla6\Template\DocumentAssetsToWebAssetManagerRector;
+use Joomla\Rector\Joomla7\GetInstanceToContainerRector;
 use Rector\Config\RectorConfig;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
@@ -183,6 +184,18 @@ return static function (RectorConfig $rectorConfig): void {
     // $rectorConfig->ruleWithConfiguration(DocumentAssetsToWebAssetManagerRector::class, [
     //    DocumentAssetsToWebAssetManagerRector::ASSET_NAME_PREFIX => 'acme.',
     // ]);
+
+    /**
+     * Refactoring rules for Joomla 7
+     */
+    $rectorConfig->sets([
+        __DIR__ . '/vendor/joomla-projects/jrector/config/sets/joomla7.php',
+    ]);
+
+    // The set above contains GetInstanceToContainerRector: it replaces the static getInstance()
+    // accessors removed in Joomla 7 (Pathway, Session, Cache, CacheController) with the
+    // application or the container. To run only that rule:
+    // $rectorConfig->rule(GetInstanceToContainerRector::class);
 
 
     /**
